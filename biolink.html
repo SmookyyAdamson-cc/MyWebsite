@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="tl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Bio Link</title>
+<style>
+/* ===== 1. RESET & BASE ===== */
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+body{
+  background:#050505 url("background.jpg") center/cover fixed no-repeat; /* palitan ng sarili mong larawan */
+  color:#fff;font-family:"Inter",system-ui,sans-serif;
+  display:flex;justify-content:center;padding:20px 16px 160px;min-height:100%;
+}
+body::before{content:"";position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:0} /* dark overlay */
+
+/* ===== VIDEO BACKGROUND ===== */
+#bgvideo{position:fixed;inset:0;width:100%;height:100%;object-fit:cover;z-index:-1}
+
+/* ===== 2. BACK BUTTON (itaas-kaliwa) ===== */
+.back{position:fixed;top:12px;left:16px;z-index:5;font-size:9px;font-weight:700;letter-spacing:.08em;
+  color:#ccc;text-decoration:none;padding:9px 12px;border:1px solid #2a2a2a;border-radius:8px;background:rgba(0,0,0,.6)}
+
+/* ===== 3. MAIN COLUMN ===== */
+.wrap{position:relative;z-index:1;width:100%;max-width:424px;margin-top:0}
+
+/* ===== 4. PROFILE CARD ===== */
+.banner{height:134px;border:1px solid #2a2a2a;border-radius:14px 14px 0 0;
+  background:#111 url("smookyy.png") center 30%/cover no-repeat}
+.profile{position:relative;padding:0 0 0 0;min-height:90px}
+.avatar{position:absolute;left:18px;top:-36px;width:86px;height:86px;border-radius:50%;
+  border:3px solid #b45cff;box-shadow:0 0 14px #b45cff,0 0 28px rgba(180,92,255,.5);
+  background:#222 url("https://cdn.discordapp.com/attachments/1490750704980328600/1564350340521005107/smookyy.jpg?ex=6ae0f249&is=6adfa0c9&hm=84052f4fca70c814a95150f21b52c9a054301323c4e712442c00a1f8d8ae36a7&") center/cover}
+.status{position:absolute;left:84px;top:36px;width:14px;height:14px;border-radius:50%;
+  background:#5a5f6a;border:2px solid #222} /* palitan ang kulay: online=#3ba55d, idle=#faa61a */
+.info{padding:8px 0 0 116px}
+.name{font-size:16px;font-weight:700;min-height:18px}
+.handle{font-size:10px;color:#777;margin-top:2px}
+.bio{font-size:11px;font-weight:600;margin-top:6px;min-height:14px}
+.bio::after{content:"|";animation:blink 1s steps(1) infinite}
+@keyframes blink{50%{opacity:0}}
+
+/* ===== 5. SOCIAL ICONS ===== */
+.socials{display:flex;gap:8px;margin:14px 0 0 18px}
+.socials a{width:32px;height:32px;display:grid;place-items:center;border:1px solid #2a2a2a;
+  border-radius:8px;background:rgba(255,255,255,.04);color:#ddd;text-decoration:none;font-size:11px;font-weight:700}
+.socials a:hover{background:rgba(255,255,255,.12)}
+
+/* ===== 6. LINKS ===== */
+.label{font-size:8px;font-weight:800;letter-spacing:.15em;color:#555;margin:24px 0 10px}
+.link{display:flex;align-items:center;gap:16px;height:117px;padding:0 20px;margin-bottom:14px;
+  background:rgba(15,15,15,.85);border:1px solid #2a2a2a;border-radius:20px;color:#fff;text-decoration:none;
+  transition:border-color .2s,transform .2s}
+.link:hover{border-color:#555;transform:translateY(-2px)}
+.link img,.link .thumb{width:74px;height:74px;border-radius:12px;border:1px solid #333;background:#1b1b1b;object-fit:cover;flex:none}
+.link h3{font-family:Georgia,"Times New Roman",serif;font-size:15px;font-weight:700;letter-spacing:.02em;text-transform:uppercase}
+.link small{display:block;margin-top:4px;font-size:8px;font-weight:700;letter-spacing:.05em;color:#888}
+
+/* ===== 7. FOOTER ===== */
+.footer{text-align:center;margin-top:30px;font-size:8px;font-weight:700;letter-spacing:.15em;color:#555;line-height:2}
+
+/* ===== 8. MUSIC PLAYER (ibabang-kaliwa) ===== */
+.player{position:fixed;left:12px;bottom:12px;z-index:5;width:283px;padding:12px 14px;
+  background:rgba(10,10,10,.9);border:1px solid #2a2a2a;border-radius:12px}
+.player .top{display:flex;justify-content:space-between;font-size:8px;font-weight:700;color:#ddd}
+.player .row{display:flex;align-items:center;gap:12px;margin:10px 0 8px}
+.play{width:28px;height:28px;border-radius:50%;border:0;background:#fff;color:#000;font-size:10px;cursor:pointer}
+.song b{display:block;font-size:11px}.song span{font-size:8px;color:#888}
+.bar{display:flex;align-items:center;gap:8px;font-size:7px;color:#888}
+.bar input{flex:1;accent-color:#fff;height:2px}
+
+/* ===== 9. LIKES / VIEWS (ibabang-kanan) ===== */
+.stats{position:fixed;right:12px;bottom:12px;z-index:5;display:flex;gap:10px;align-items:center;
+  padding:9px 14px;border:1px solid #2a2a2a;border-radius:20px;background:rgba(10,10,10,.9);font-size:10px;font-weight:700}
+.stats button{background:none;border:0;color:#fff;font:inherit;cursor:pointer}
+.stats .heart.on{color:#ff3b5c}
+
+/* ===== CLICK TO ENTER ===== */
+#enter{position:fixed;inset:0;z-index:100;display:grid;place-items:center;border:0;cursor:pointer;
+  background:rgba(0,0,0,.88);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
+  color:#fff;font-family:Georgia,"Times New Roman",serif;font-size:20px;letter-spacing:.2em;text-transform:uppercase;
+  transition:opacity .6s ease,visibility .6s}
+#enter span{animation:pulse 2s ease-in-out infinite}
+#enter.hide{opacity:0;visibility:hidden;pointer-events:none}
+@keyframes pulse{50%{opacity:.35}}
+
+/* ===== PAGE SWITCH / NEXT BUTTON ===== */
+[hidden]{display:none!important}
+.nextbtn{display:flex;align-items:center;justify-content:center;height:56px;margin:6px 0 0;
+  background:rgba(15,15,15,.85);border:1px solid #444;border-radius:16px;color:#fff;text-decoration:none;
+  font-family:Georgia,"Times New Roman",serif;font-size:14px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;
+  transition:border-color .2s,background .2s}
+.nextbtn:hover{border-color:#888;background:rgba(40,40,40,.9)}
+.page-title{font-family:Georgia,"Times New Roman",serif;font-size:22px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;margin:56px 0 10px}
+.page-text{font-size:12px;line-height:1.7;color:#aaa;margin-bottom:6px}
+
+/* ===== MAS MALIIT NA LINK BOX (PAGE 2) ===== */
+#page2 .link{height:72px;padding:0 14px;gap:12px;border-radius:14px;margin-bottom:10px}
+#page2 .link img,#page2 .link .thumb{width:48px;height:48px;border-radius:9px}
+#page2 .link h3{font-size:13px}
+#page2 .link small{margin-top:3px}
+
+/* ===== AVATARS (PAGE 2) ===== */
+.avatars{display:flex;flex-wrap:wrap;justify-content:center;gap:22px 20px;margin:10px 0 28px}
+.av{width:96px;height:96px;padding:0;border-radius:50%;border:3px solid #000;cursor:pointer;
+  background:#1b1b1b center/cover no-repeat;color:#fff;font:700 28px Georgia,"Times New Roman",serif;
+  display:grid;place-items:center;box-shadow:0 0 12px #000,0 0 26px rgba(0,0,0,.6);
+  transition:transform .2s,box-shadow .2s}
+.av:hover{transform:scale(1.08);box-shadow:0 0 16px #000,0 0 38px rgba(0,0,0,.8)}
+.av:focus-visible{outline:2px solid #fff;outline-offset:4px}
+
+/* ===== HUD PROFILE ===== */
+#hud{position:fixed;inset:0;z-index:90;display:grid;place-items:center;padding:16px;
+  background:rgba(0,0,0,.72);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);
+  opacity:0;visibility:hidden;transition:opacity .25s,visibility .25s}
+#hud.open{opacity:1;visibility:visible}
+.hud-panel{position:relative;width:100%;max-width:380px;max-height:100%;overflow:auto;text-align:center;padding-bottom:20px;
+  background:#0d0d0d;border:1px solid #262626;border-radius:22px;box-shadow:0 20px 60px rgba(0,0,0,.7);
+  transform:scale(.94);transition:transform .25s}
+#hud.open .hud-panel{transform:scale(1)}
+.hud-banner{height:100px;background:linear-gradient(135deg,#202020,#0a0a0a) center/cover no-repeat} /* banner */
+.hud-x{position:absolute;top:10px;right:10px;width:30px;height:30px;border-radius:50%;border:0;
+  background:rgba(0,0,0,.65);color:#fff;font-size:18px;line-height:1;cursor:pointer}
+.hud-x:hover{background:rgba(40,40,40,.9)}
+.hud-av{position:relative;width:78px;height:78px;margin:-39px auto 0;border-radius:50%;border:3px solid #0d0d0d;
+  background:#1b1b1b center/cover no-repeat;display:grid;place-items:center;font:700 26px Georgia,serif;box-shadow:0 0 0 2px #333}
+.hud-name{margin-top:14px;font-family:"Archivo Black","Arial Black",Impact,sans-serif;font-size:13px;letter-spacing:.25em;text-transform:uppercase}
+.hud-handle{margin:6px 0 18px;font-size:11px;letter-spacing:.04em;color:#888}
+.hud-socials{display:grid;gap:10px;padding:0 20px;text-align:left}
+.hud-row{display:flex;align-items:center;gap:14px;padding:13px 16px;border:1px solid #2a2a2a;border-radius:14px;
+  background:rgba(255,255,255,.02);color:#fff;text-decoration:none;transition:border-color .2s,background .2s}
+a.hud-row:hover{border-color:#555;background:rgba(255,255,255,.06)}
+.hud-row.empty{opacity:.55}
+.hud-ic{width:22px;height:22px;display:grid;place-items:center;flex:none}
+.hud-ic.tiktok{color:#fff}.hud-ic.instagram{color:#e1306c}.hud-ic.discord{color:#7a85ff}
+.hud-tx b{display:block;font-size:13px;font-weight:700}
+.hud-tx small{display:block;margin-top:2px;min-height:13px;font-size:11px;color:#888}
+
+/* ===== LABEL NG PAGE 2 (Daughter's | Son's) ===== */
+#page2 .label{font-size:14px;font-weight:700;letter-spacing:.1em;color:#ddd;margin:26px 0 14px}
+
+/* ===== BUMALIK BUTTON (PAGE 2): kapareho ng "BACK TO WORLD", nasa ibaba, kapantay ng music player ===== */
+#page2{padding-bottom:110px}
+.backbtn{font-size:9px;font-weight:700;letter-spacing:.08em;color:#ccc;text-decoration:none;white-space:nowrap;
+  padding:9px 12px;border:1px solid #2a2a2a;border-radius:8px;background:rgba(0,0,0,.6)}
+.fwdbtn{display:block;width:max-content;margin:8px auto 0}
+.backbtn:hover{color:#fff;border-color:#444}
+@media(min-width:641px){
+  #page2 .backbtn{position:fixed;left:50%;bottom:47px;transform:translateX(-50%);z-index:5}
+}
+/* ===== PAGE 2: THE CHILDREN LAYOUT ===== */
+#page2{max-width:1060px}
+#page2 .page-title{font-family:Anton,Impact,"Arial Narrow Bold",sans-serif;font-size:clamp(34px,6vw,54px);font-weight:400;
+  letter-spacing:.08em;text-align:center;margin:18px 0 12px;color:#fff;text-shadow:0 0 18px rgba(255,255,255,.35)}
+#page2 .page-text{text-align:center;font-size:12px;letter-spacing:.14em;color:#b5aca6;margin:0}
+.p2-line{width:84px;height:1px;background:#bbb;margin:16px auto 22px}
+#page2 .label{text-align:center;margin:0 0 28px}
+.cards{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:22px;margin:0 auto 24px;max-width:1000px}
+.card{position:relative;display:flex;flex-direction:column;align-items:center;padding:0 12px 18px;overflow:hidden;cursor:pointer;
+  background:rgba(10,10,10,.88);border:1px solid #252525;border-radius:18px;color:#fff;text-align:center;font:inherit;
+  transition:transform .2s,border-color .2s,box-shadow .2s}
+.card:hover{transform:translateY(-3px);border-color:#555;box-shadow:0 10px 28px rgba(0,0,0,.6)}
+.card:focus-visible{outline:2px solid #fff;outline-offset:3px}
+.c-banner{align-self:stretch;height:96px;margin:0 -12px;background:linear-gradient(135deg,#202020,#0a0a0a) center/cover no-repeat} /* dito ang banner */
+.c-av{position:relative;width:68px;height:68px;margin-top:-34px;border-radius:50%;border:3px solid #000;
+  background:#1b1b1b center/cover no-repeat;display:grid;place-items:center;font:700 20px Georgia,serif;
+  box-shadow:0 0 0 1px #2a2a2a,0 0 16px rgba(255,255,255,.12)}
+.c-name{margin-top:14px;font-family:"Archivo Black","Arial Black",Impact,sans-serif;font-size:14px;letter-spacing:.2em;
+  text-transform:uppercase;text-shadow:0 0 10px rgba(255,255,255,.25)}
+.c-status{display:flex;align-items:center;gap:6px;margin-top:8px;font-size:10px;letter-spacing:.06em;color:#bbb}
+.c-dot{width:7px;height:7px;border-radius:50%;background:#555}
+.c-dot.on{background:#3ba55d;box-shadow:0 0 6px #3ba55d}
+.c-dot.dnd{background:#e53e3e;box-shadow:0 0 6px #e53e3e}
+.c-bio{margin-top:10px;min-height:15px;font-size:10px;font-style:italic;line-height:1.5;color:#aaa}
+.c-rank{margin-top:10px;font-size:8px;letter-spacing:.2em;color:#777;text-transform:uppercase}
+.c-view{margin-top:12px;font-size:8px;font-weight:700;letter-spacing:.22em;color:#ccc}
+@media(max-width:900px){.cards{grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}}
+
+@media(max-width:640px){
+  #page2 .backbtn{display:block;width:max-content;margin:0 auto}
+}
+
+@media(max-width:640px){.player{width:calc(100% - 24px);bottom:56px}.stats{bottom:12px}}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Archivo+Black&display=swap" rel="stylesheet">
+</head>
+<body>
+
+<video id="bgvideo" src="https://cdn.discordapp.com/attachments/1490750704980328600/1564352214422655019/From_Klickpin.com-_Fresh_clean_car_habits_with_simple_charm_and_useful_ideas_for_cozy_moods_for_calm_daily_routines-pin-id-997265911246922169.mp4?ex=6ae0f408&is=6adfa288&hm=1c9f148e2b562ef4efaf1b408d3a50cfa18c03140abdab508b3d5122233312ac&" autoplay muted loop playsinline preload="auto"></video>
+
+<!-- CLICK TO ENTER -->
+<button id="enter" type="button"><span>Click to enter</span></button>
+
+<a class="back" href="#">← BACK TO WORLD</a>
+
+<main class="wrap" id="page1">
+
+  <!-- PROFILE -->
+  <div class="banner"></div>
+  <section class="profile">
+    <div class="avatar"></div><div class="status"></div>
+    <div class="info">
+      <div class="name" id="name"></div>
+      <div class="handle">@xo.ismuki ✱</div>
+      <div class="bio" id="bio"></div>
+    </div>
+  </section>
+
+  <!-- SOCIALS -->
+  <nav class="socials">
+    <a href="https://www.tiktok.com/@sytheofficial0914" target="_blank" rel="noopener noreferrer" aria-label="TikTok"><svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor" aria-hidden="true"><path d="M12.525.02c1.31-.02 2.61-.01 3.91-.02.08 1.53.63 3.09 1.75 4.17 1.12 1.11 2.7 1.62 4.24 1.79v4.03c-1.44-.05-2.89-.35-4.2-.97-.57-.26-1.1-.59-1.62-.93-.01 2.92.01 5.84-.02 8.75-.08 1.4-.54 2.79-1.35 3.94-1.31 1.92-3.58 3.17-5.91 3.21-1.43.08-2.86-.31-4.08-1.03-2.02-1.19-3.44-3.37-3.65-5.71-.02-.5-.03-1-.01-1.49.18-1.9 1.12-3.72 2.58-4.96 1.66-1.44 3.98-2.13 6.15-1.72.02 1.48-.04 2.96-.04 4.44-.99-.32-2.15-.23-3.02.37-.63.41-1.11 1.04-1.36 1.75-.21.51-.15 1.07-.14 1.61.24 1.64 1.82 3.02 3.5 2.87 1.12-.01 2.19-.66 2.77-1.61.19-.33.4-.67.41-1.06.1-1.79.06-3.57.07-5.36.01-4.03-.01-8.05.02-12.07z"/></svg></a>
+    <a href="https://www.instagram.com/sytheofficial0914" target="_blank" rel="noopener noreferrer" aria-label="Instagram"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg></a>
+    <a href="https://discord.gg/u26WnMYCa" target="_blank" rel="noopener noreferrer" aria-label="Discord"><svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor" aria-hidden="true"><path d="M20.317 4.3698a19.7913 19.7913 0 00-4.8851-1.5152.0741.0741 0 00-.0785.0371c-.211.3753-.4447.8648-.6083 1.2495-1.8447-.2762-3.68-.2762-5.4868 0-.1636-.3933-.4058-.8742-.6177-1.2495a.077.077 0 00-.0785-.037 19.7363 19.7363 0 00-4.8852 1.515.0699.0699 0 00-.0321.0277C.5334 9.0458-.319 13.5799.0992 18.0578a.0824.0824 0 00.0312.0561c2.0528 1.5076 4.0413 2.4228 5.9929 3.0294a.0777.0777 0 00.0842-.0276c.4616-.6304.8731-1.2952 1.226-1.9942a.076.076 0 00-.0416-.1057c-.6528-.2476-1.2743-.5495-1.8722-.8923a.077.077 0 01-.0076-.1277c.1258-.0943.2517-.1923.3718-.2914a.0743.0743 0 01.0776-.0105c3.9278 1.7933 8.18 1.7933 12.0614 0a.0739.0739 0 01.0785.0095c.1202.099.246.1981.3728.2924a.077.077 0 01-.0066.1276 12.2986 12.2986 0 01-1.873.8914.0766.0766 0 00-.0407.1067c.3604.698.7719 1.3628 1.225 1.9932a.076.076 0 00.0842.0286c1.961-.6067 3.9495-1.5219 6.0023-3.0294a.077.077 0 00.0313-.0552c.5004-5.177-.8382-9.6739-3.5485-13.6604a.061.061 0 00-.0312-.0286zM8.02 15.3312c-1.1825 0-2.1569-1.0857-2.1569-2.419 0-1.3332.9555-2.4189 2.157-2.4189 1.2108 0 2.1757 1.0952 2.1568 2.419 0 1.3332-.9555 2.4189-2.1569 2.4189zm7.9748 0c-1.1825 0-2.1569-1.0857-2.1569-2.419 0-1.3332.9554-2.4189 2.1569-2.4189 1.2108 0 2.1757 1.0952 2.1568 2.419 0 1.3332-.946 2.4189-2.1568 2.4189Z"/></svg></a>
+  </nav>
+
+  <!-- LINKS -->
+  <div class="label">LINKS</div>
+  <a class="link" href="https://discord.gg/Bg6KwuDXT" target="_blank" rel="noopener noreferrer"><img src="https://cdn.discordapp.com/attachments/1490750704980328600/1564353514480599132/e8d28dc1-5558-4e6f-95fa-a11a0c1ae910.png?ex=6ae0f53e&is=6adfa3be&hm=4f23ed45030d3e117dda2e688186c69ff8836c05b16de2189bd9c7f505dc5b95&" alt="Adamson"><div><h3>Adamson (Snitch Not Allowed)</h3><small>CLICK TO VIEW</small></div></a>
+  <a class="link" href="https://discord.gg/u26WnMYCa" target="_blank" rel="noopener noreferrer"><img src="https://cdn.discordapp.com/attachments/1543319393918783639/1543470698297688176/3dgifmaker84791.gif?ex=6ae1739a&is=6ae0221a&hm=a8637547ebf910a1f2c5d579612764255b5deb0c1aca2525d25b8e356d16d0f6&" alt="Safehub"><div><h3>Safehub -Usok</h3><small>CLICK TO VIEW</small></div></a>
+  <a class="link" href="#"><div class="thumb"></div><div><h3>Pangatlong Discord</h3><small>CLICK TO VIEW</small></div></a>
+
+  <!-- BUTTON PAPUNTANG SUSUNOD NA PAGE -->
+  <a class="backbtn fwdbtn" href="#page2">HOLY CHILDREN's &rarr;</a>
+
+  <!-- FOOTER -->
+  <div class="footer">— ADAMSON ON TOP —<br>adamson.gg<br>© 2026 — ORIGINAL CONTENT</div>
+</main>
+
+<!-- ================= PAGE 2 ================= -->
+<main class="wrap" id="page2" hidden>
+  <h1 class="page-title" style="text-transform:none">HOLY CHILDREN's</h1>
+  <p class="page-text">You weren't born to blend in or follow the crowd. You were born to lead the pack.</p>
+
+  <div class="p2-line"></div>
+
+  <div class="label">Daughter's | Son's</div>
+
+  <div class="cards" id="avatars"></div>
+
+  <a class="backbtn" href="#">&larr; HOLY FATHER</a>
+
+  <div class="footer">— ADAMSON ON TOP —<br>adamson.gg<br>© 2026 — ORIGINAL CONTENT</div>
+</main>
+
+<!-- HUD PROFILE -->
+<div id="hud" role="dialog" aria-modal="true" aria-label="Profile">
+  <div class="hud-panel">
+    <div class="hud-banner" id="hudBanner"></div>
+    <button class="hud-x" id="hudX" type="button" aria-label="Isara">&times;</button>
+    <div class="hud-av" id="hudAv"></div>
+    <div class="hud-name" id="hudName"></div>
+    <div class="hud-handle" id="hudHandle"></div>
+    <div class="hud-socials" id="hudSocials"></div>
+  </div>
+</div>
+
+<!-- MUSIC PLAYER -->
+<aside class="player">
+  <div class="top"><span>Listening to</span><span>•••</span></div>
+  <div class="row">
+    <button class="play" id="play" aria-label="Play/Pause">▶</button>
+    <div class="song"><b>Weng Weng</b><span>Uncle Dags</span></div>
+  </div>
+  <div class="bar"><span id="cur">00:00</span><input type="range" id="seek" min="0" max="100" value="0"><span id="dur">00:00</span></div>
+  <audio id="audio" src="song.mp3" autoplay loop preload="auto"></audio>
+</aside>
+
+<!-- LIKES / VIEWS -->
+<div class="stats">
+  <button class="heart" id="like">♥ <span id="likes">1</span></button>
+  <span style="color:#333">|</span>
+  <span>👁 28</span>
+</div>
+
+<script>
+/* Typing effect para sa bio at pangalan */
+function typeText(el, text, speed=70){
+  let i=0; (function tick(){ el.textContent=text.slice(0,i++); if(i<=text.length) setTimeout(tick,speed); })();
+}
+typeText(document.getElementById('name'), 'Smookyy', 90);
+setTimeout(()=>typeText(document.getElementById('bio'), 'I don\'t make the rules.'), 900);
+
+/* Music player (song.mp3) */
+const audio=document.getElementById('audio'), play=document.getElementById('play'), seek=document.getElementById('seek'),
+      cur=document.getElementById('cur'), dur=document.getElementById('dur');
+const fmt=t=>{t=Math.floor(t||0);return String(Math.floor(t/60)).padStart(2,'0')+':'+String(t%60).padStart(2,'0')};
+const icon=()=>{play.textContent=audio.paused?'\u25B6':'\u275A\u275A';};
+
+audio.volume=0.8;                         /* 0 hanggang 1 */
+audio.onloadedmetadata=()=>{dur.textContent=fmt(audio.duration);};
+audio.ontimeupdate=()=>{cur.textContent=fmt(audio.currentTime); if(audio.duration) seek.value=(audio.currentTime/audio.duration)*100;};
+audio.onplay=audio.onpause=icon;
+seek.oninput=()=>{ if(audio.duration) audio.currentTime=(seek.value/100)*audio.duration; };
+play.onclick=e=>{e.stopPropagation(); audio.paused?audio.play():audio.pause();};
+
+/* Kusang tutugtog pagbukas. Kapag hinarang ng browser, magsisimula sa unang galaw ng bisita */
+audio.play().catch(()=>{
+  const start=()=>{audio.play().catch(()=>{}); ['pointerdown','keydown','touchstart','wheel'].forEach(ev=>document.removeEventListener(ev,start));};
+  ['pointerdown','keydown','touchstart','wheel'].forEach(ev=>document.addEventListener(ev,start,{passive:true}));
+});
+icon();
+
+/* Click to enter: ito ang magsisimula ng kanta at magbubukas ng page */
+const enter=document.getElementById('enter');
+enter.addEventListener('click',()=>{
+  audio.play().catch(()=>{});
+  enter.classList.add('hide');
+  setTimeout(()=>enter.remove(),700);
+});
+enter.focus();
+
+/* Pag-switch ng page (hindi nare-reload kaya tuloy ang kanta) */
+function route(){
+  const p2=location.hash==='#page2';
+  document.getElementById('page1').hidden=p2;
+  document.getElementById('page2').hidden=!p2;
+  window.scrollTo(0,0);
+}
+addEventListener('hashchange',route); route();
+
+/* ===== MGA AVATAR NA MAY HUD PROFILE =====
+   Palitan ang bawat linya: pangalan, handle, bio, status, rank, joined,
+   img (avatar), banner (link ng banner), at tiktok / instagram / discord (link ng social media; iwanang '' kung wala). Iwanang '' ang img o link kung wala. */
+const MEMBERS=[
+  {name:'Pipth',handle:'@pipth_',bio:'miguel♡',status:'Online',rankLabel:'',rank:'Daughter',joined:'2026',img:'pipth.png',banner:'https://cdn.discordapp.com/attachments/1564079465204678736/1564623974166437998/4A6A0AE4-E61C-45B7-B5B5-E543F2559941.gif?ex=6ae1f120&is=6ae09fa0&hm=7b9611347221d53e9871bfa8e1216cb632f6292bd730c492044bbb5f4a504bf0&',link:'',tiktok:'https://www.tiktok.com/@hipipth?_r=1&_t=ZS-9AuAks0Hb9D',instagram:'',discord:'https://discord.gg/CKzNqhGSW'},
+  {name:'Eula',handle:'@itsmeyula',bio:'Gandang natural',status:'ONLINE',rankLabel:'',rank:'Daughter',joined:'2026',img:'eula.png',banner:'https://cdn.discordapp.com/attachments/1564079465204678736/1564616569244356720/5Sh0.gif?ex=6ae1ea3b&is=6ae098bb&hm=63480d1622abdccfb12d57eb3fce915d373dc326b1392802dd43004d78a2df82&',link:'',tiktok:'https://www.tiktok.com/@itsmeyula?_r=1&_t=ZS-9Au8Z8JE5Qq',instagram:'https://www.instagram.com/itsmeyulaa_?rpxt=MXBsMzZwMmx2NzIzcg%3D%3D&utm_source=qr',discord:'https://discord.gg/CKzNqhGSW'},
+  {name:'LUCIIIVERSE',handle:'@109.104.105',bio:'pro ngo',status:'ONLINE',rankLabel:'',rank:'SON',joined:'2026',img:'https://cdn.discordapp.com/attachments/1467204875837505609/1564642017185628220/Screenshot_2026-10-27_220831.png?ex=6ae201ee&is=6ae0b06e&hm=1fbf08e4297c7b0645e7fa048eb0cd15eea2cfd56b03a92a7a0d966eed108590&',banner:'https://cdn.discordapp.com/attachments/1564079465204678736/1564570549680865340/A12CB190-944E-470B-B965-8C67D0B9FE06.gif?ex=6ae1bf5f&is=6ae06ddf&hm=cd5d8d371a581fb3cd5b6af650c56c65f19a6b5c66659ba84b205fcf5bb476c1&',link:'',tiktok:'https://www.tiktok.com/@luci.sulasok',instagram:'https://www.instagram.com/luciiiiiverse?mdxt=M2FpYmt1bjB4ZzZj&utm_source=qr',discord:'https://discord.gg/CKzNqhGSW'},
+  {name:'Gib',handle:'@xonzibaby',bio:'𝘸𝘢𝘭𝘢, 𝘵𝘶𝘭𝘰𝘨, 𝘶𝘮𝘢𝘭𝘪𝘴.',status:'ONLINE',rankLabel:'',rank:'SON',joined:'2026',img:'gib.png',banner:'https://cdn.discordapp.com/attachments/1564079465204678736/1564568773191671839/lv_0_20261018123718-ezgif.com-video-to-webp-converter.webp?ex=6ae1bdb7&is=6ae06c37&hm=335397fdac65f169fcdef4f16a7b152e1a3d402a6874913330df20b826b4a019&',link:'',tiktok:'https://www.tiktok.com/@binzuust',instagram:'https://www.instagram.com/binzuust?psln=MXViMm82aW96dTljZA==',discord:'https://discord.gg/CKzNqhGSW'},
+  {name:'Uno',handle:'@uno.godz',bio:'Uno is my name',status:'ONLINE',rankLabel:'',rank:'SON',joined:'2026',img:'uno.png',banner:'https://cdn.discordapp.com/attachments/1564079465204678736/1564590417935208538/GIF.gif?ex=6ae1d1e0&is=6ae08060&hm=31c92fbecb0a5a98b32bc2ccff4ff544a96cd48963544fde46daef4df8e94f49&',link:'',tiktok:'https://www.tiktok.com/@mckurthy',instagram:'https://www.instagram.com/mckurthy/',discord:'https://discord.gg/CKzNqhGSW'},
+  {name:'Mike',handle:'@_shakdart',bio:'Like me or not, i don\'t care',status:'ONLINE',rankLabel:'',rank:'SON',joined:'2026',img:'https://cdn.discordapp.com/attachments/1536006523740749824/1564615429878583447/IMG_3605.jpg?ex=6ae1e92b&is=6ae097ab&hm=61d65d9f33e2ff67a91ebcf491a798c0ce08f24ed5f26a0588383b4c89b20a98&',banner:'https://cdn.discordapp.com/attachments/1564079465204678736/1564611522402062356/Adamsonlogo.gif?ex=6ae1e588&is=6ae09408&hm=41e13f2c13a2c055ee4ff2fef8f95dd97f2c76c1c8bf7b70e992bddf5be1eaa9&',link:'',tiktok:'https://www.tiktok.com/@gt86_ae',instagram:'https://www.instagram.com/_sctehn',discord:'https://discord.gg/CKzNqhGSW'},
+];
+const hud=document.getElementById('hud'), hudAv=document.getElementById('hudAv');
+const ICONS={"tiktok": "<svg viewBox=\"0 0 24 24\" width=\"20\" height=\"20\" fill=\"currentColor\" aria-hidden=\"true\"><path d=\"M12.525.02c1.31-.02 2.61-.01 3.91-.02.08 1.53.63 3.09 1.75 4.17 1.12 1.11 2.7 1.62 4.24 1.79v4.03c-1.44-.05-2.89-.35-4.2-.97-.57-.26-1.1-.59-1.62-.93-.01 2.92.01 5.84-.02 8.75-.08 1.4-.54 2.79-1.35 3.94-1.31 1.92-3.58 3.17-5.91 3.21-1.43.08-2.86-.31-4.08-1.03-2.02-1.19-3.44-3.37-3.65-5.71-.02-.5-.03-1-.01-1.49.18-1.9 1.12-3.72 2.58-4.96 1.66-1.44 3.98-2.13 6.15-1.72.02 1.48-.04 2.96-.04 4.44-.99-.32-2.15-.23-3.02.37-.63.41-1.11 1.04-1.36 1.75-.21.51-.15 1.07-.14 1.61.24 1.64 1.82 3.02 3.5 2.87 1.12-.01 2.19-.66 2.77-1.61.19-.33.4-.67.41-1.06.1-1.79.06-3.57.07-5.36.01-4.03-.01-8.05.02-12.07z\"/></svg>", "instagram": "<svg viewBox=\"0 0 24 24\" width=\"20\" height=\"20\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><rect x=\"3\" y=\"3\" width=\"18\" height=\"18\" rx=\"5\"/><circle cx=\"12\" cy=\"12\" r=\"4\"/><circle cx=\"17.5\" cy=\"6.5\" r=\"1\" fill=\"currentColor\" stroke=\"none\"/></svg>", "discord": "<svg viewBox=\"0 0 24 24\" width=\"20\" height=\"20\" fill=\"currentColor\" aria-hidden=\"true\"><path d=\"M20.317 4.3698a19.7913 19.7913 0 00-4.8851-1.5152.0741.0741 0 00-.0785.0371c-.211.3753-.4447.8648-.6083 1.2495-1.8447-.2762-3.68-.2762-5.4868 0-.1636-.3933-.4058-.8742-.6177-1.2495a.077.077 0 00-.0785-.037 19.7363 19.7363 0 00-4.8852 1.515.0699.0699 0 00-.0321.0277C.5334 9.0458-.319 13.5799.0992 18.0578a.0824.0824 0 00.0312.0561c2.0528 1.5076 4.0413 2.4228 5.9929 3.0294a.0777.0777 0 00.0842-.0276c.4616-.6304.8731-1.2952 1.226-1.9942a.076.076 0 00-.0416-.1057c-.6528-.2476-1.2743-.5495-1.8722-.8923a.077.077 0 01-.0076-.1277c.1258-.0943.2517-.1923.3718-.2914a.0743.0743 0 01.0776-.0105c3.9278 1.7933 8.18 1.7933 12.0614 0a.0739.0739 0 01.0785.0095c.1202.099.246.1981.3728.2924a.077.077 0 01-.0066.1276 12.2986 12.2986 0 01-1.873.8914.0766.0766 0 00-.0407.1067c.3604.698.7719 1.3628 1.225 1.9932a.076.076 0 00.0842.0286c1.961-.6067 3.9495-1.5219 6.0023-3.0294a.077.077 0 00.0313-.0552c.5004-5.177-.8382-9.6739-3.5485-13.6604a.061.061 0 00-.0312-.0286zM8.02 15.3312c-1.1825 0-2.1569-1.0857-2.1569-2.419 0-1.3332.9555-2.4189 2.157-2.4189 1.2108 0 2.1757 1.0952 2.1568 2.419 0 1.3332-.9555 2.4189-2.1569 2.4189zm7.9748 0c-1.1825 0-2.1569-1.0857-2.1569-2.419 0-1.3332.9554-2.4189 2.1569-2.4189 1.2108 0 2.1757 1.0952 2.1568 2.419 0 1.3332-.946 2.4189-2.1568 2.4189Z\"/></svg>"};
+const SOCIAL_TITLES={tiktok:'TikTok',instagram:'Instagram',discord:'Discord server'};
+function setAvatar(el,m,i){ if(m.img){el.style.backgroundImage='url("'+m.img+'")';el.textContent='';} else {el.style.backgroundImage='none';el.textContent=i+1;} }
+function handleFrom(url,kind){
+  try{
+    const u=new URL(url), path=u.pathname.replace(/^\/+|\/+$/g,'');
+    if(kind==='tiktok') return path;                 /* @username */
+    if(kind==='instagram') return '@'+path;
+    if(kind==='discord') return 'discord.gg/'+path;
+  }catch(e){}
+  return '';
+}
+function socialRow(kind,url){
+  const el=document.createElement(url?'a':'div'); el.className='hud-row'+(url?'':' empty');
+  if(url){el.href=url; el.target='_blank'; el.rel='noopener noreferrer';}
+  const ic=document.createElement('span'); ic.className='hud-ic '+kind; ic.innerHTML=ICONS[kind];
+  const tx=document.createElement('span'); tx.className='hud-tx';
+  const b=document.createElement('b'); b.textContent=SOCIAL_TITLES[kind];
+  const sm=document.createElement('small'); sm.textContent=url?handleFrom(url,kind):'';
+  tx.append(b,sm); el.append(ic,tx); return el;
+}
+function openHud(m,i){
+  setAvatar(hudAv,m,i);
+  document.getElementById('hudBanner').style.backgroundImage=m.banner?'url("'+m.banner+'")':'none';
+  document.getElementById('hudName').textContent=m.name;
+  document.getElementById('hudHandle').textContent=m.handle;
+  const box=document.getElementById('hudSocials'); box.textContent='';
+  ['tiktok','instagram','discord'].forEach(k=>box.appendChild(socialRow(k,m[k])));
+  hud.classList.add('open'); document.getElementById('hudX').focus();
+}
+function closeHud(){hud.classList.remove('open');}
+const grid=document.getElementById('avatars');
+const mk=(tag,cls,txt)=>{const e=document.createElement(tag); if(cls) e.className=cls; if(txt!==undefined) e.textContent=txt; return e;};
+MEMBERS.forEach((m,i)=>{
+  const c=mk('button','card'); c.type='button'; c.setAttribute('aria-label',m.name+' - view profile');
+  const ban=mk('div','c-banner'); if(m.banner) ban.style.backgroundImage='url("'+m.banner+'")';
+  const av=mk('div','c-av'); setAvatar(av,m,i);
+  const st=mk('div','c-status'); const t=(m.status||'').toLowerCase();
+  st.append(mk('i','c-dot '+(t.includes('online')?'on':(t.includes('disturb')?'dnd':''))), document.createTextNode(m.status));
+  c.append(ban,av,mk('div','c-name',m.name),st,mk('div','c-bio',m.bio),mk('div','c-rank',m.rank),mk('div','c-view','VIEW PROFILE'));
+  c.onclick=()=>openHud(m,i); grid.appendChild(c);
+});
+document.getElementById('hudX').onclick=closeHud;
+hud.addEventListener('click',e=>{ if(e.target===hud) closeHud(); });
+addEventListener('keydown',e=>{ if(e.key==='Escape') closeHud(); });
+addEventListener('hashchange',closeHud);
+
+/* Live Discord status ni Smookyy (@xo.ismuki) gamit ang Lanyard API.
+   Kailangan munang sumali ang may-ari ng account sa https://discord.gg/lanyard para gumana. */
+const DISCORD_ID='557856463201239040';
+const STATUS_COLORS={online:'#3ba55d',idle:'#faa61a',dnd:'#ed4245',offline:'#5a5f6a'};
+async function loadDiscord(){
+  try{
+    const r=await fetch('https://api.lanyard.rest/v1/users/'+DISCORD_ID);
+    const j=await r.json(); if(!j.success) return;
+    const dot=document.querySelector('.status'), st=j.data.discord_status||'offline';
+    dot.style.background=STATUS_COLORS[st]||STATUS_COLORS.offline; dot.title=st;
+  }catch(e){}
+}
+loadDiscord(); setInterval(loadDiscord,60000);
+
+/* Like button */
+let liked=false; const like=document.getElementById('like'), likes=document.getElementById('likes');
+like.onclick=()=>{ liked=!liked; like.classList.toggle('on',liked); likes.textContent= liked?2:1; };
+</script>
+</body>
+</html>
